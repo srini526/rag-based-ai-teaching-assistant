@@ -12,7 +12,7 @@ export function StudyMascot({ mood = "happy", className = "" }) {
         <path
           className="mascot-sparkle"
           d="M14 22L16.5 16L19 22L25 24.5L19 27L16.5 33L14 27L8 24.5L14 22Z"
-          fill="#F59E0B"
+          fill="#5EEAD4"
         />
         <circle
           className="mascot-sparkle delay-1"
@@ -26,23 +26,23 @@ export function StudyMascot({ mood = "happy", className = "" }) {
           cx="15"
           cy="76"
           r="3.5"
-          fill="#A78BFA"
+          fill="#38BDF8"
         />
 
         {/* Antenna & Star Crown */}
         <g className="mascot-antenna">
           <path
             d="M50 26V14"
-            stroke="#7C5CFC"
+            stroke="#2F80ED"
             strokeWidth="4.5"
             strokeLinecap="round"
           />
-          <circle cx="50" cy="11" r="6" fill="#FBBF24" stroke="#7C5CFC" strokeWidth="3" />
+          <circle cx="50" cy="11" r="6" fill="#5EEAD4" stroke="#2F80ED" strokeWidth="3" />
         </g>
 
         {/* Cute Side Ears / Wings */}
-        <ellipse cx="19" cy="54" rx="7" ry="11" fill="#DDD6FE" stroke="#7C5CFC" strokeWidth="3.5" />
-        <ellipse cx="81" cy="54" rx="7" ry="11" fill="#DDD6FE" stroke="#7C5CFC" strokeWidth="3.5" />
+        <ellipse cx="19" cy="54" rx="7" ry="11" fill="#BFE3FF" stroke="#2F80ED" strokeWidth="3.5" />
+        <ellipse cx="81" cy="54" rx="7" ry="11" fill="#BFE3FF" stroke="#2F80ED" strokeWidth="3.5" />
 
         {/* Main Pastel Body */}
         <rect
@@ -52,7 +52,7 @@ export function StudyMascot({ mood = "happy", className = "" }) {
           height="54"
           rx="26"
           fill="url(#lumiBodyGrad)"
-          stroke="#7C5CFC"
+          stroke="#2F80ED"
           strokeWidth="4"
         />
 
@@ -64,7 +64,7 @@ export function StudyMascot({ mood = "happy", className = "" }) {
           height="33"
           rx="16"
           fill="#FFFFFF"
-          stroke="#E9D5FF"
+          stroke="#CDE6FA"
           strokeWidth="2"
         />
 
@@ -99,16 +99,16 @@ export function StudyMascot({ mood = "happy", className = "" }) {
 
         {/* Thinking Glasses when busy/streaming */}
         {isThinking && (
-          <g stroke="#7C5CFC" strokeWidth="2.4">
-            <circle cx="40" cy="48" r="7.5" fill="rgba(124, 92, 252, 0.08)" />
-            <circle cx="60" cy="48" r="7.5" fill="rgba(124, 92, 252, 0.08)" />
+          <g stroke="#2F80ED" strokeWidth="2.4">
+            <circle cx="40" cy="48" r="7.5" fill="rgba(47, 128, 237, 0.08)" />
+            <circle cx="60" cy="48" r="7.5" fill="rgba(47, 128, 237, 0.08)" />
             <path d="M47.5 48H52.5" strokeLinecap="round" />
           </g>
         )}
 
         {/* Mouth Expression */}
         {isThinking ? (
-          <circle cx="50" cy="57.5" r="2.8" fill="#7C5CFC" />
+          <circle cx="50" cy="57.5" r="2.8" fill="#2F80ED" />
         ) : isCelebrating ? (
           <path
             d="M44 55C45.5 60 54.5 60 56 55Z"
@@ -137,9 +137,9 @@ export function StudyMascot({ mood = "happy", className = "" }) {
 
         <defs>
           <linearGradient id="lumiBodyGrad" x1="22" y1="25" x2="78" y2="79" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#EDE9FE" />
-            <stop offset="0.55" stopColor="#DDD6FE" />
-            <stop offset="1" stopColor="#FCE7F3" />
+            <stop stopColor="#E6F4FF" />
+            <stop offset="0.55" stopColor="#BFE3FF" />
+            <stop offset="1" stopColor="#D7FBF3" />
           </linearGradient>
         </defs>
       </svg>
@@ -149,22 +149,17 @@ export function StudyMascot({ mood = "happy", className = "" }) {
 
 export default function TypingIndicator() {
   return (
-    <div className="assistant-message-row typing-row" role="status" aria-live="polite">
-      <div className="assistant-avatar">
+    <div className="msg-row bot typing-row" role="status" aria-live="polite">
+      <div className="bot-avatar">
         <StudyMascot mood="thinking" />
       </div>
-      <div className="typing-card">
-        <div className="typing-label">
-          Lumi is connecting the dots from your sources
-          <span className="typing-dots">
-            <i />
-            <i />
-            <i />
-          </span>
-        </div>
-        <div className="typing-progress">
-          <span />
-        </div>
+      <div className="bubble typing">
+        <span className="typing-dots">
+          <i />
+          <i />
+          <i />
+        </span>
+        <small>Lumi is reading your sources</small>
       </div>
     </div>
   );

@@ -1,112 +1,97 @@
-import {
-  FiAward,
-  FiBookOpen,
-  FiHome,
-  FiLayers,
-  FiMenu,
-  FiMoon,
-  FiSidebar,
-  FiSun,
-} from "react-icons/fi";
+import { useState } from "react";
+import { FiAward, FiClock, FiFolder, FiMoon, FiPlus, FiSun, FiTrash2 } from "react-icons/fi";
+import { StudyMascot } from "./TypingIndicator";
 
 export default function Header({
   theme,
   onThemeToggle,
-  onMenu,
-  sidebarOpen = true,
-  onToggleSidebar,
-  showLibrary = true,
-  onToggleLibrary,
-  onShowWelcome,
-  xp = 120,
+  xp,
+  sourceCount,
+  onOpenLibrary,
+  onNewChat,
+  chatHistory = [],
+  currentChatId,
+  onSelectChat,
+  onDeleteChat,
+  mood,
 }) {
+  const [historyOpen, setHistoryOpen] = useState(false);
+
   return (
-    <header className="top-header">
-      <div className="header-left">
-        <button
-          type="button"
-          className="mobile-menu"
-          onClick={onMenu}
-          aria-label="Open navigation"
-        >
-          <FiMenu />
-        </button>
-
-        {onToggleSidebar && (
-          <button
-            type="button"
-            className={`drawer-toggle-pill desktop-only ${sidebarOpen ? "active" : ""}`}
-            onClick={onToggleSidebar}
-            title={sidebarOpen ? "Collapse sidebar drawer" : "Expand sidebar drawer"}
-            aria-label={sidebarOpen ? "Collapse sidebar drawer" : "Expand sidebar drawer"}
-          >
-            <FiSidebar />
-            <span>{sidebarOpen ? "Hide Menu" : "Menu"}</span>
-          </button>
-        )}
-
-        <a
-          className="brand-lockup"
-          href="#top"
-          onClick={(e) => {
-            if (onShowWelcome) {
-              e.preventDefault();
-              onShowWelcome();
-            }
-          }}
-          title="Back to welcome screen"
-        >
-          <span className="brand-mark">
-            <FiBookOpen />
-          </span>
-          <span>
-            <b>
-              Study<span>Verse</span>
-            </b>
-            <small>GAMIFIED AI STUDY COMPANION</small>
-          </span>
-        </a>
+    <header className="topbar">
+      <div className="brand">
+        <span className="brand-mascot">
+          <StudyMascot mood={mood} />
+        </span>
+        <b>StudyVerse</b>
       </div>
 
-      <div className="header-right">
-        <span className="xp-pill" title="Your study XP grows as you ask questions and complete quizzes">
+      <div className="topbar-right">
+        <span className="xp-pill" key={xp} title="XP grows as you ask, quiz and learn">
           <FiAward /> {xp} XP
         </span>
 
-        <span className="online-pill desktop-only">
-          <i /> Lumi Online
-        </span>
-
-        {onToggleLibrary && (
+        <div className="menu-wrap">
           <button
             type="button"
-            className={`drawer-toggle-pill ${showLibrary ? "active" : ""}`}
-            onClick={onToggleLibrary}
-            title={showLibrary ? "Hide learning library" : "Open learning library"}
+            className="icon-btn"
+            onClick={() => setHistoryOpen((v) => !v)}
+            aria-label="Chat history"
+            title="Chat history"
           >
-            <FiLayers />
-            <span>{showLibrary ? "Hide Library" : "Library"}</span>
+            <FiClock />
           </button>
-        )}
+          {historyOpen && (
+            <>
+              <div className="menu-scrim" onClick={() => setHistoryOpen(false)} />
+              <div className="menu pop">
+                {chatHistory.length === 0 ? (
+                  <p className="menu-empty">No chats yet</p>
+                ) : (
+                  chatHistory.map((c) => (
+                    <div key={c.id} className={`menu-row ${c.id === currentChatId ? "active" : ""}`}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelectChat(c.id);
+                          setHistoryOpen(false);
+                        }}
+                      >
+                        {c.title || "New chat"}
+                      </button>
+                      {onDeleteChat && (
+                        <button
+                          type="button"
+                          className="icon-btn sm"
+                          onClick={() => onDeleteChat(c.id)}
+                          aria-label="Delete chat"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
+        </div>
 
-        {onShowWelcome && (
-          <button
-            type="button"
-            className="header-icon"
-            onClick={onShowWelcome}
-            aria-label="Welcome screen"
-            title="Welcome screen"
-          >
-            <FiHome />
-          </button>
-        )}
+        <button type="button" className="icon-btn" onClick={onNewChat} title="New chat" aria-label="New chat">
+          <FiPlus />
+        </button>
+
+        <button type="button" className="btn ghost sm" onClick={onOpenLibrary}>
+          <FiFolder /> Sources
+          {sourceCount > 0 && <span className="badge">{sourceCount}</span>}
+        </button>
 
         <button
           type="button"
-          className="header-icon"
+          className="icon-btn"
           onClick={onThemeToggle}
           aria-label="Toggle theme"
-          title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          title={theme === "light" ? "Dark mode" : "Light mode"}
         >
           {theme === "light" ? <FiMoon /> : <FiSun />}
         </button>

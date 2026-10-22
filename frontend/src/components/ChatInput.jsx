@@ -1,75 +1,62 @@
 import { useRef, useState } from "react";
-import { FiArrowUp, FiCornerDownLeft, FiPaperclip } from "react-icons/fi";
+import { FiArrowUp, FiPlus, FiSquare } from "react-icons/fi";
 
-export default function ChatInput({ onSend, loading, hasSources = false }) {
-  const [question, setQuestion] = useState("");
-  const textareaRef = useRef(null);
+export default function ChatInput({ onSend, loading, disabled, onAttach, onStop }) {
+  const [text, setText] = useState("");
+  const ref = useRef(null);
 
-  const resizeTextarea = (el) => {
+  const grow = (el) => {
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, 130)}px`;
   };
 
-  const handleChange = (e) => {
-    setQuestion(e.target.value);
-    resizeTextarea(e.target);
-  };
-
-  const handleSubmit = () => {
-    if (!question.trim() || loading) return;
-    onSend(question.trim());
-    setQuestion("");
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
+  const submit = () => {
+    if (!text.trim() || loading || disabled) return;
+    onSend(text.trim());
+    setText("");
+    if (ref.current) ref.current.style.height = "auto";
   };
 
   return (
-    <div className="composer-wrap">
-      <div className="composer-card">
-        <textarea
-          ref={textareaRef}
-          value={question}
-          onChange={handleChange}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit();
-            }
-          }}
-          placeholder="Ask Lumi anything about your uploaded notes, lectures, or links…"
-          disabled={loading}
-          rows={1}
-          aria-label="Ask your learning question"
-        />
-        <div className="composer-bottom">
-          <div className="composer-hint">
-            <FiPaperclip />
-            <span>
-              {hasSources
-                ? "Focused on your selected sources"
-                : "Grounded in all ready library sources"}
-            </span>
-            <span className="hint-divider">·</span>
-            <FiCornerDownLeft />
-            <span>Enter to send · Shift+Enter for newline</span>
-          </div>
-          <button
-            type="button"
-            className="send-button"
-            onClick={handleSubmit}
-            disabled={loading || !question.trim()}
-            aria-label="Send question"
-            title="Send question"
-          >
-            {loading ? <span className="send-spinner" /> : <FiArrowUp />}
-          </button>
-        </div>
-      </div>
-      <p className="composer-disclaimer">
-        Lumi grounds every answer in your study materials. Always verify key details in the cited sources.
-      </p>
+    <div className="composer">
+      <button type="button" className="icon-btn" onClick={onAttach} title="Add sources" aria-label="Add sources">
+        <FiPlus />
+      </button>
+      <textarea
+        ref={ref}
+        rows={1}
+        value={text}
+        disabled={disabled}
+        placeholder="Ask anything about your sources…"
+        aria-label="Ask a question"
+        onChange={(e) => {
+          setText(e.target.value);
+          grow(e.target);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            submit();
+          }
+        }}
+      />
+      {loading ? (
+        <button type="button" className="send stop" onClick={onStop} aria-label="Stop" title="Stop">
+          <FiSquare />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="send"
+          onClick={submit}
+          disabled={disabled || !text.trim()}
+          aria-label="Send"
+          title="Send"
+        >
+          <FiArrowUp />
+        </button>
+      )}
     </div>
   );
 }
