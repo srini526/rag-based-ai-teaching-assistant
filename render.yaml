@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: rag-teaching-assistant-api
+    runtime: python
+    rootDir: Backend
+    buildCommand: apt-get update && apt-get install -y ffmpeg && pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120 app:app
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GROQ_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: llama-3.1-8b-instant
+      - key: CLOUDFLARE_ACCOUNT_ID
+        sync: false
+      - key: CLOUDFLARE_API_TOKEN
+        sync: false
+      - key: EMBEDDING_MODEL
+        value: '@cf/baai/bge-m3'
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: MAX_UPLOAD_MB
+        value: '25'
+      - key: MAX_FILES_PER_UPLOAD
+        value: '5'
+      - key: MAX_MEDIA_SECONDS
+        value: '900'
+      - key: SESSION_TTL_SECONDS
+        value: '3600'
+      - key: MAX_SESSION_SECONDS
+        value: '14400'
+      - key: MAX_SESSIONS
+        value: '30'
+      - key: MAX_CONCURRENT_JOBS
+        value: '2'
+      - key: MAX_ACTIVE_JOBS_PER_SESSION
+        value: '5'
+      - key: WHISPER_MODEL
+        value: whisper-large-v3-turbo
+  - type: web
+    name: rag-teaching-assistant-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
