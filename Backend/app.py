@@ -17,7 +17,27 @@ logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 logger = logging.getLogger("rag-assistant")
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024 * MAX_FILES_PER_UPLOAD + 1024 * 1024
-CORS(app, resources={r"/api/*": {"origins": ALLOWED_ORIGINS}, r"/health": {"origins": ALLOWED_ORIGINS}})
+
+allowed_origins = ALLOWED_ORIGINS
+
+if isinstance(allowed_origins, str):
+    allowed_origins = [
+        origin.strip()
+        for origin in allowed_origins.split(",")
+        if origin.strip()
+    ]
+else:
+    allowed_origins = list(allowed_origins or [])
+
+frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+
+if frontend_url and frontend_url not in allowed_origins:
+    allowed_origins.append(frontend_url)
+
+CORS(app, resources={
+    r"/api/*": {"origins": allowed_origins},
+    r"/health": {"origins": allowed_origins}
+})
 SESSIONS = {}
 JOBS = {}
 LOCK = threading.RLock()
